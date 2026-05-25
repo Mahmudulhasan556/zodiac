@@ -176,10 +176,40 @@ export default function App() {
   ];
 
   const ffxpProducts = [
-    { name: "BR MOD", plans: ["10 Days", "30 Days"], tag: "Popular", icon: "⚡" },
-    { name: "DRIP CLIENT NR", plans: ["10 Days", "15 Days", "30 Days"], tag: "Premium", icon: "◆" },
-    { name: "FLORITE", plans: ["10 Days", "30 Days"], tag: "Smooth", icon: "✦" },
-    { name: "CERTIFICATE", plans: ["1 Month", "1 Year"], tag: "Official", icon: "◈" },
+    {
+      name: "BR MOD",
+      plans: [
+        { duration: "10 Days", price: "৳750" },
+        { duration: "30 Days", price: "৳1650" },
+      ],
+      tag: "Popular",
+      icon: "⚡",
+    },
+    {
+      name: "DRIP CLIENT NON ROOT",
+      plans: [
+        { duration: "10 Days", price: "৳800" },
+        { duration: "15 Days", price: "৳1200" },
+        { duration: "30 Days", price: "৳2000" },
+      ],
+      tag: "Premium",
+      icon: "◆",
+    },
+    {
+      name: "FLORITE",
+      plans: [{ duration: "1 Month", price: "৳2200" }],
+      tag: "Smooth",
+      icon: "✦",
+    },
+    {
+      name: "IOS CERTIFICATE",
+      plans: [
+        { duration: "1 Month", price: "৳1200" },
+        { duration: "1 Year", price: "৳2000" },
+      ],
+      tag: "Official",
+      icon: "◈",
+    },
   ];
 
   const skills = [
@@ -332,6 +362,11 @@ export default function App() {
         @keyframes productGlow {
           0%, 100% { opacity: .45; transform: scale(1); }
           50% { opacity: .9; transform: scale(1.08); }
+        }
+
+        @keyframes greenPriceGlow {
+          0%, 100% { box-shadow: 0 0 18px rgba(34,197,94,.18), inset 0 0 18px rgba(34,197,94,.05); }
+          50% { box-shadow: 0 0 36px rgba(34,197,94,.45), inset 0 0 30px rgba(34,197,94,.12); }
         }
 
         .font-cinzel { font-family: 'Cinzel', serif; }
@@ -520,7 +555,7 @@ export default function App() {
             return (
               <div
                 key={product.name}
-                onClick={() => setSelectedFfxp({ name: product.name, plan: product.plans[0] })}
+                onClick={() => setSelectedFfxp({ name: product.name, plan: product.plans[0].duration, price: product.plans[0].price })}
                 className={`relative overflow-hidden rounded-[36px] border p-6 transition duration-500 hover:-translate-y-3 ${selected ? "border-purple-100/55 bg-purple-100/16" : "border-purple-100/15 bg-purple-100/8"}`}
                 style={{ animation: `productFloat ${4 + index * 0.4}s ease-in-out infinite` }}
               >
@@ -540,19 +575,21 @@ export default function App() {
 
                   <div className="mt-6 flex flex-wrap gap-2">
                     {product.plans.map((plan) => {
-                      const active = selectedFfxp?.name === product.name && selectedFfxp?.plan === plan;
+                      const active = selectedFfxp?.name === product.name && selectedFfxp?.plan === plan.duration;
 
                       return (
                         <button
                           type="button"
-                          key={plan}
+                          key={plan.duration}
                           onClick={(e) => {
                             e.stopPropagation();
-                            setSelectedFfxp({ name: product.name, plan });
+                            setSelectedFfxp({ name: product.name, plan: plan.duration, price: plan.price });
                           }}
-                          className={`rounded-full border px-4 py-2 text-xs font-bold transition hover:scale-105 ${active ? "border-purple-100/60 bg-purple-50 text-[#130020]" : "border-purple-100/15 bg-black/25 text-purple-50/75 hover:bg-purple-100/15"}`}
+                          className={`rounded-2xl border px-4 py-3 text-left text-xs font-bold transition hover:scale-105 ${active ? "border-green-300/70 bg-green-400/15 text-white" : "border-green-300/20 bg-black/25 text-purple-50/75 hover:bg-green-400/10"}`}
+                          style={active ? { animation: "greenPriceGlow 2.4s ease-in-out infinite" } : undefined}
                         >
-                          {plan}
+                          <span className="block">{plan.duration}</span>
+                          <span className="mt-1 block text-lg font-black text-green-300 drop-shadow-[0_0_12px_rgba(34,197,94,.85)]">{plan.price}</span>
                         </button>
                       );
                     })}
@@ -560,7 +597,7 @@ export default function App() {
 
                   {selected && (
                     <div className="mt-6 rounded-2xl border border-purple-100/15 bg-black/25 p-4 text-sm text-purple-50/70">
-                      Selected: <span className="font-bold text-white">{selectedFfxp.name} - {selectedFfxp.plan}</span>
+                      Selected: <span className="font-bold text-white">{selectedFfxp.name} - {selectedFfxp.plan} - {selectedFfxp.price}</span>
                     </div>
                   )}
                 </div>
@@ -577,7 +614,7 @@ export default function App() {
                 setOrderForm((prev) => ({
                   ...prev,
                   service: "Custom Website",
-                  description: `FFXP Order: ${selectedFfxp.name} - ${selectedFfxp.plan}`,
+                  description: `FFXP Order: ${selectedFfxp.name} - ${selectedFfxp.plan} - ${selectedFfxp.price}`,
                 }));
               }
             }}
