@@ -228,9 +228,9 @@ export default function App() {
   ];
 
   const stats = [
-    { number: "React", label: "Frontend Framework" },
-    { number: "4K", label: "Visual Direction" },
-    { number: "UI", label: "Design Focus" },
+    { number: "Software", label: "Engineer" },
+    { number: "Web", label: "Developer" },
+    { number: "Cyber", label: "Security Specialist" },
   ];
 
   const services = [
