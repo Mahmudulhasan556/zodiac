@@ -10,6 +10,7 @@ export default function App() {
     description: "",
   });
   const [orders, setOrders] = useState([]);
+  const [selectedFfxp, setSelectedFfxp] = useState(null);
 
   const cursorRef = useRef(null);
   const cursorGlowRef = useRef(null);
@@ -125,7 +126,6 @@ export default function App() {
     "Animated Greeting Page",
     "Business Website",
     "Custom Website",
-    "FFXP",
   ];
 
   const ffxpProducts = [
@@ -361,6 +361,7 @@ export default function App() {
           <div className="hidden items-center gap-7 text-sm text-purple-100/70 md:flex">
             <a className="hover:text-white transition" href="#about">About</a>
             <a className="hover:text-white transition" href="#services">Services</a>
+            <a className="hover:text-white transition" href="#ffxp">FFXP</a>
             <a className="hover:text-white transition" href="#orders">Order</a>
             <a className="hover:text-white transition" href="#work">Work</a>
             <a className="hover:text-white transition" href="#contact">Contact</a>
@@ -372,6 +373,7 @@ export default function App() {
             <div className="flex flex-col gap-4 text-purple-100/75">
               <a href="#about" onClick={() => setMenuOpen(false)}>About</a>
               <a href="#services" onClick={() => setMenuOpen(false)}>Services</a>
+              <a href="#ffxp" onClick={() => setMenuOpen(false)}>FFXP</a>
               <a href="#orders" onClick={() => setMenuOpen(false)}>Order</a>
               <a href="#work" onClick={() => setMenuOpen(false)}>Work</a>
               <a href="#contact" onClick={() => setMenuOpen(false)}>Contact</a>
@@ -455,6 +457,90 @@ export default function App() {
         </div>
       </section>
 
+      <section id="ffxp" className="relative z-20 mx-auto max-w-7xl px-5 py-24">
+        <div className="text-center">
+          <p className="font-cinzel text-sm tracking-[10px] text-fuchsia-100/80">FFXP</p>
+          <h2 className="mt-5 font-cinzel text-5xl font-black md:text-7xl glow-text">FFXP Products</h2>
+          <p className="mx-auto mt-6 max-w-2xl text-purple-50/62 leading-8">
+            Select a product card and choose a duration. After selecting, click the order button and it will prepare the order form for you.
+          </p>
+        </div>
+
+        <div className="mt-14 grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+          {ffxpProducts.map((product, index) => {
+            const selected = selectedFfxp?.name === product.name;
+
+            return (
+              <div
+                key={product.name}
+                onClick={() => setSelectedFfxp({ name: product.name, plan: product.plans[0] })}
+                className={`relative overflow-hidden rounded-[36px] border p-6 transition duration-500 hover:-translate-y-3 ${selected ? "border-purple-100/55 bg-purple-100/16" : "border-purple-100/15 bg-purple-100/8"}`}
+                style={{ animation: `productFloat ${4 + index * 0.4}s ease-in-out infinite` }}
+              >
+                <div className="absolute -right-12 -top-12 h-36 w-36 rounded-full bg-fuchsia-400/20 blur-2xl" style={{ animation: "productGlow 3s ease-in-out infinite" }} />
+                <div className="absolute inset-0 bg-gradient-to-br from-purple-500/15 via-transparent to-fuchsia-500/12" />
+
+                <div className="relative z-10">
+                  <div className="flex items-start justify-between gap-4">
+                    <div>
+                      <p className="text-5xl drop-shadow-[0_0_18px_rgba(216,180,254,.9)]">{product.icon}</p>
+                      <h3 className="mt-5 text-2xl font-black">{product.name}</h3>
+                    </div>
+                    <span className="rounded-full bg-purple-50 px-3 py-1 text-[10px] font-black uppercase tracking-[2px] text-[#130020]">
+                      {product.tag}
+                    </span>
+                  </div>
+
+                  <div className="mt-6 flex flex-wrap gap-2">
+                    {product.plans.map((plan) => {
+                      const active = selectedFfxp?.name === product.name && selectedFfxp?.plan === plan;
+
+                      return (
+                        <button
+                          type="button"
+                          key={plan}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setSelectedFfxp({ name: product.name, plan });
+                          }}
+                          className={`rounded-full border px-4 py-2 text-xs font-bold transition hover:scale-105 ${active ? "border-purple-100/60 bg-purple-50 text-[#130020]" : "border-purple-100/15 bg-black/25 text-purple-50/75 hover:bg-purple-100/15"}`}
+                        >
+                          {plan}
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  {selected && (
+                    <div className="mt-6 rounded-2xl border border-purple-100/15 bg-black/25 p-4 text-sm text-purple-50/70">
+                      Selected: <span className="font-bold text-white">{selectedFfxp.name} - {selectedFfxp.plan}</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        <div className="mt-10 flex justify-center">
+          <a
+            href="#orders"
+            onClick={() => {
+              if (selectedFfxp) {
+                setOrderForm((prev) => ({
+                  ...prev,
+                  service: "Custom Website",
+                  description: `FFXP Order: ${selectedFfxp.name} - ${selectedFfxp.plan}`,
+                }));
+              }
+            }}
+            className="rounded-full bg-purple-50 px-8 py-4 text-sm font-black tracking-[3px] text-[#130020] shadow-[0_0_45px_rgba(216,180,254,.42)] transition hover:scale-105"
+          >
+            ORDER SELECTED FFXP
+          </a>
+        </div>
+      </section>
+
       <section id="orders" className="relative z-20 mx-auto max-w-7xl px-5 py-24">
         <div className="text-center">
           <p className="font-cinzel text-sm tracking-[10px] text-fuchsia-100/80">ORDER</p>
@@ -492,45 +578,9 @@ export default function App() {
                   </div>
                 </div>
               </div>
-
-              {orderForm.service === "FFXP" && (
-                <div className="rounded-[32px] border border-purple-100/15 bg-black/20 p-4">
-                  <div className="mb-5 flex items-center justify-between gap-4">
-                    <div>
-                      <p className="font-cinzel text-xs tracking-[6px] text-fuchsia-100/75">FFXP STORE</p>
-                      <h3 className="mt-2 text-2xl font-black">Choose a Product</h3>
-                    </div>
-                    <span className="rounded-full border border-purple-100/15 bg-purple-100/10 px-4 py-2 text-xs font-bold tracking-[2px] text-purple-50/70">Animated Cards</span>
-                  </div>
-                  <div className="grid gap-4 md:grid-cols-2">
-                    {ffxpProducts.map((product, index) => (
-                      <div key={product.name} className="relative overflow-hidden rounded-3xl border border-purple-100/15 bg-gradient-to-br from-purple-950/70 via-fuchsia-950/30 to-black/45 p-5 transition duration-500 hover:-translate-y-2 hover:border-purple-100/35" style={{ animation: `productFloat ${4 + index * 0.4}s ease-in-out infinite` }}>
-                        <div className="absolute -right-10 -top-10 h-28 w-28 rounded-full bg-fuchsia-400/20 blur-2xl" style={{ animation: "productGlow 3s ease-in-out infinite" }} />
-                        <div className="relative z-10">
-                          <div className="flex items-start justify-between gap-4">
-                            <div>
-                              <p className="text-4xl drop-shadow-[0_0_18px_rgba(216,180,254,.9)]">{product.icon}</p>
-                              <h4 className="mt-4 text-xl font-black text-white">{product.name}</h4>
-                            </div>
-                            <span className="rounded-full bg-purple-50 px-3 py-1 text-[10px] font-black uppercase tracking-[2px] text-[#130020]">{product.tag}</span>
-                          </div>
-                          <div className="mt-5 flex flex-wrap gap-2">
-                            {product.plans.map((plan) => (
-                              <button key={plan} type="button" onClick={() => setOrderForm((prev) => ({ ...prev, description: `${product.name} - ${plan}` }))} className="rounded-full border border-purple-100/15 bg-purple-100/10 px-4 py-2 text-xs font-bold text-purple-50/80 transition hover:scale-105 hover:bg-purple-100/20">
-                                {plan}
-                              </button>
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
               <div>
                 <label className="text-sm font-bold uppercase tracking-[3px] text-purple-200/70">Description</label>
-                <textarea required name="description" value={orderForm.description} onChange={handleOrderChange} rows="5" placeholder={orderForm.service === "FFXP" ? "Click a product plan above or type your FFXP order details..." : "Describe what you want... colors, pages, features, deadline, examples, etc."} className="mt-3 w-full resize-none rounded-2xl border border-purple-100/15 bg-black/30 px-5 py-4 text-white outline-none transition placeholder:text-purple-100/35 focus:border-purple-200/50" />
+                <textarea required name="description" value={orderForm.description} onChange={handleOrderChange} rows="5" placeholder="Describe what you want... colors, pages, features, deadline, examples, etc." className="mt-3 w-full resize-none rounded-2xl border border-purple-100/15 bg-black/30 px-5 py-4 text-white outline-none transition placeholder:text-purple-100/35 focus:border-purple-200/50" />
               </div>
 
               <button className="rounded-full bg-purple-50 px-7 py-4 text-sm font-black tracking-[3px] text-[#130020] transition hover:scale-105">PLACE ORDER</button>
