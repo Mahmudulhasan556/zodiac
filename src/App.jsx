@@ -1,8 +1,15 @@
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 export default function App() {
   const [activeTab, setActiveTab] = useState("story");
   const [menuOpen, setMenuOpen] = useState(false);
+  const [orderForm, setOrderForm] = useState({
+    fullName: "",
+    phone: "",
+    service: "Portfolio Website",
+    description: "",
+  });
+  const [orders, setOrders] = useState([]);
 
   const cursorRef = useRef(null);
   const cursorGlowRef = useRef(null);
@@ -13,6 +20,17 @@ export default function App() {
   const particles = useMemo(() => Array.from({ length: 150 }), []);
   const comets = useMemo(() => Array.from({ length: 12 }), []);
   const mist = useMemo(() => Array.from({ length: 10 }), []);
+
+  useEffect(() => {
+    const savedOrders = localStorage.getItem("mh-orders");
+    if (savedOrders) {
+      setOrders(JSON.parse(savedOrders));
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("mh-orders", JSON.stringify(orders));
+  }, [orders]);
 
   function handleMouseMove(e) {
     targetMouse.current = { x: e.clientX, y: e.clientY };
@@ -43,6 +61,35 @@ export default function App() {
 
     animationFrame.current = requestAnimationFrame(animateCursor);
   }
+
+  function handleOrderChange(e) {
+    const { name, value } = e.target;
+    setOrderForm((prev) => ({ ...prev, [name]: value }));
+  }
+
+  function placeOrder(e) {
+    e.preventDefault();
+
+    const newOrder = {
+      id: `MH-${Date.now().toString().slice(-6)}`,
+      fullName: orderForm.fullName,
+      phone: orderForm.phone,
+      service: orderForm.service,
+      description: orderForm.description,
+      status: "Order Received",
+      createdAt: new Date().toLocaleString(),
+    };
+
+    setOrders((prev) => [newOrder, ...prev]);
+    setOrderForm({
+      fullName: "",
+      phone: "",
+      service: "Portfolio Website",
+      description: "",
+    });
+  }
+
+  const orderSteps = ["Order Received", "Working", "Sent", "Delivered"];
 
   const skills = [
     "React",
@@ -331,6 +378,7 @@ export default function App() {
           <div className="hidden items-center gap-7 text-sm text-purple-100/70 md:flex">
             <a className="hover:text-white transition" href="#about">About</a>
             <a className="hover:text-white transition" href="#services">Services</a>
+            <a className="hover:text-white transition" href="#orders">Order</a>
             <a className="hover:text-white transition" href="#work">Work</a>
             <a className="hover:text-white transition" href="#contact">Contact</a>
           </div>
@@ -345,6 +393,7 @@ export default function App() {
             <div className="flex flex-col gap-4 text-purple-100/75">
               <a href="#about" onClick={() => setMenuOpen(false)}>About</a>
               <a href="#services" onClick={() => setMenuOpen(false)}>Services</a>
+              <a href="#orders" onClick={() => setMenuOpen(false)}>Order</a>
               <a href="#work" onClick={() => setMenuOpen(false)}>Work</a>
               <a href="#contact" onClick={() => setMenuOpen(false)}>Contact</a>
             </div>
@@ -454,6 +503,128 @@ export default function App() {
                 <span key={skill} className="rounded-full border border-purple-100/15 bg-purple-100/8 px-5 py-3 text-purple-50/75 backdrop-blur-xl transition hover:scale-105 hover:bg-purple-100/15">
                   {skill}
                 </span>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="orders" className="relative z-20 mx-auto max-w-7xl px-5 py-24">
+        <div className="text-center">
+          <p className="font-cinzel text-sm tracking-[10px] text-fuchsia-100/80">ORDER</p>
+          <h2 className="mt-5 font-cinzel text-5xl font-black md:text-7xl glow-text">Place a Website Order</h2>
+          <p className="mx-auto mt-6 max-w-2xl text-purple-50/62 leading-8">
+            Fill the form with your full name, phone number with country code, website type, and description. After placing an order, you can see the order status below.
+          </p>
+        </div>
+
+        <div className="mt-14 grid gap-8 lg:grid-cols-[0.95fr_1.05fr]">
+          <form onSubmit={placeOrder} className="glass-card rounded-[42px] p-7 md:p-10">
+            <div className="grid gap-5">
+              <div>
+                <label className="text-sm font-bold uppercase tracking-[3px] text-purple-200/70">Full Name</label>
+                <input
+                  required
+                  name="fullName"
+                  value={orderForm.fullName}
+                  onChange={handleOrderChange}
+                  placeholder="Enter your full name"
+                  className="mt-3 w-full rounded-2xl border border-purple-100/15 bg-black/30 px-5 py-4 text-white outline-none transition placeholder:text-purple-100/35 focus:border-purple-200/50"
+                />
+              </div>
+
+              <div>
+                <label className="text-sm font-bold uppercase tracking-[3px] text-purple-200/70">Phone Number With Country Code</label>
+                <input
+                  required
+                  name="phone"
+                  value={orderForm.phone}
+                  onChange={handleOrderChange}
+                  placeholder="Example: +8801XXXXXXXXX"
+                  className="mt-3 w-full rounded-2xl border border-purple-100/15 bg-black/30 px-5 py-4 text-white outline-none transition placeholder:text-purple-100/35 focus:border-purple-200/50"
+                />
+              </div>
+
+              <div>
+                <label className="text-sm font-bold uppercase tracking-[3px] text-purple-200/70">Order Type</label>
+                <select
+                  name="service"
+                  value={orderForm.service}
+                  onChange={handleOrderChange}
+                  className="mt-3 w-full rounded-2xl border border-purple-100/15 bg-black/30 px-5 py-4 text-white outline-none transition focus:border-purple-200/50"
+                >
+                  <option>Portfolio Website</option>
+                  <option>Landing Page</option>
+                  <option>Animated Greeting Page</option>
+                  <option>Business Website</option>
+                  <option>Custom Website</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="text-sm font-bold uppercase tracking-[3px] text-purple-200/70">Description</label>
+                <textarea
+                  required
+                  name="description"
+                  value={orderForm.description}
+                  onChange={handleOrderChange}
+                  rows="5"
+                  placeholder="Describe what you want... colors, pages, features, deadline, examples, etc."
+                  className="mt-3 w-full resize-none rounded-2xl border border-purple-100/15 bg-black/30 px-5 py-4 text-white outline-none transition placeholder:text-purple-100/35 focus:border-purple-200/50"
+                />
+              </div>
+
+              <button className="rounded-full bg-purple-50 px-7 py-4 text-sm font-black tracking-[3px] text-[#130020] transition hover:scale-105">
+                PLACE ORDER
+              </button>
+            </div>
+          </form>
+
+          <div className="glass-card rounded-[42px] p-7 md:p-10">
+            <div className="flex items-center justify-between gap-4">
+              <div>
+                <p className="font-cinzel text-sm tracking-[8px] text-purple-100/70">STATUS</p>
+                <h3 className="mt-3 text-3xl font-black">Order Tracking</h3>
+              </div>
+              <span className="rounded-full border border-purple-100/15 bg-purple-100/8 px-4 py-2 text-sm text-purple-50/70">
+                {orders.length} Orders
+              </span>
+            </div>
+
+            <div className="mt-8 space-y-5">
+              {orders.length === 0 && (
+                <div className="rounded-3xl border border-purple-100/12 bg-black/25 p-6 text-purple-50/60">
+                  No order placed yet. Submit the form to create your first order.
+                </div>
+              )}
+
+              {orders.map((order) => (
+                <div key={order.id} className="rounded-3xl border border-purple-100/12 bg-black/25 p-6">
+                  <div className="flex flex-wrap items-start justify-between gap-4">
+                    <div>
+                      <p className="text-sm font-bold uppercase tracking-[3px] text-purple-200/70">{order.id}</p>
+                      <h4 className="mt-2 text-2xl font-black">{order.service}</h4>
+                      <p className="mt-2 text-sm text-purple-50/55">{order.fullName} • {order.phone}</p>
+                    </div>
+                    <span className="rounded-full bg-purple-50 px-4 py-2 text-xs font-black tracking-[2px] text-[#130020]">
+                      {order.status}
+                    </span>
+                  </div>
+
+                  <p className="mt-4 text-purple-50/62 leading-7">{order.description}</p>
+                  <p className="mt-3 text-xs text-purple-50/40">Placed: {order.createdAt}</p>
+
+                  <div className="mt-6 grid gap-3 sm:grid-cols-4">
+                    {orderSteps.map((step) => {
+                      const active = orderSteps.indexOf(step) <= orderSteps.indexOf(order.status);
+                      return (
+                        <div key={step} className={`rounded-2xl border p-3 text-center text-xs font-bold tracking-[1px] ${active ? "border-purple-200/40 bg-purple-100/15 text-white" : "border-purple-100/10 bg-black/20 text-purple-50/35"}`}>
+                          {step}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
               ))}
             </div>
           </div>
