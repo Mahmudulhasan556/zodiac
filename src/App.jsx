@@ -617,7 +617,7 @@ export default function App() {
               if (selectedFfxp) {
                 setOrderForm((prev) => ({
                   ...prev,
-                  service: "Custom Website",
+                  service: "FREEFIRE PANEL",
                   description: `FFXP Order: ${selectedFfxp.name} - ${selectedFfxp.plan} - ${selectedFfxp.price}`,
                 }));
               }
