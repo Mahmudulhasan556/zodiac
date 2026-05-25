@@ -91,6 +91,14 @@ export default function App() {
 
   const orderSteps = ["Order Received", "Working", "Sent", "Delivered"];
 
+  const orderTypes = [
+    "Portfolio Website",
+    "Landing Page",
+    "Animated Greeting Page",
+    "Business Website",
+    "Custom Website",
+  ];
+
   const skills = [
     "React",
     "Tailwind CSS",
@@ -249,6 +257,17 @@ export default function App() {
           0% { transform: translateY(0); opacity: 0; }
           35% { opacity: 1; }
           100% { transform: translateY(30px); opacity: 0; }
+        }
+
+        @keyframes orderBgMove {
+          0% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+          100% { background-position: 0% 50%; }
+        }
+
+        @keyframes optionPulse {
+          0%, 100% { box-shadow: 0 0 18px rgba(168,85,247,.12), inset 0 0 20px rgba(255,255,255,.025); }
+          50% { box-shadow: 0 0 35px rgba(236,72,153,.25), inset 0 0 35px rgba(255,255,255,.06); }
         }
 
         .font-cinzel { font-family: 'Cinzel', serif; }
@@ -547,18 +566,29 @@ export default function App() {
 
               <div>
                 <label className="text-sm font-bold uppercase tracking-[3px] text-purple-200/70">Order Type</label>
-                <select
-                  name="service"
-                  value={orderForm.service}
-                  onChange={handleOrderChange}
-                  className="mt-3 w-full rounded-2xl border border-purple-100/15 bg-black/30 px-5 py-4 text-white outline-none transition focus:border-purple-200/50"
-                >
-                  <option>Portfolio Website</option>
-                  <option>Landing Page</option>
-                  <option>Animated Greeting Page</option>
-                  <option>Business Website</option>
-                  <option>Custom Website</option>
-                </select>
+
+                <div className="mt-3 rounded-[28px] border border-purple-100/15 bg-gradient-to-r from-purple-950/70 via-fuchsia-950/40 to-indigo-950/70 bg-[length:300%_300%] p-3 shadow-[0_0_35px_rgba(168,85,247,.18)]" style={{ animation: "orderBgMove 7s ease infinite" }}>
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    {orderTypes.map((type) => {
+                      const selected = orderForm.service === type;
+
+                      return (
+                        <button
+                          type="button"
+                          key={type}
+                          onClick={() => setOrderForm((prev) => ({ ...prev, service: type }))}
+                          className={`relative overflow-hidden rounded-2xl border px-4 py-4 text-left font-bold transition duration-300 hover:-translate-y-1 ${selected ? "border-purple-100/50 bg-purple-100/20 text-white" : "border-purple-100/10 bg-black/25 text-purple-50/65 hover:bg-purple-100/12"}`}
+                          style={selected ? { animation: "optionPulse 2.6s ease-in-out infinite" } : undefined}
+                        >
+                          <span className="relative z-10">{type}</span>
+                          {selected && (
+                            <span className="absolute right-4 top-1/2 h-3 w-3 -translate-y-1/2 rounded-full bg-purple-100 shadow-[0_0_18px_rgba(216,180,254,.95)]" />
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
               </div>
 
               <div>
