@@ -213,14 +213,18 @@ export default function App() {
   ];
 
   const skills = [
+    "Python",
+    "C++",
+    "C#",
+    "Java",
+    "JSX",
     "React",
     "Tailwind CSS",
-    "JavaScript",
+    "Cybersecurity",
+    "Web Development",
+    "Software Development",
     "Responsive Design",
     "UI Animation",
-    "Landing Pages",
-    "Portfolio Websites",
-    "Modern Frontend",
   ];
 
   const stats = [
@@ -269,8 +273,8 @@ export default function App() {
   const tabs = {
     story: {
       label: "Story",
-      title: "I create websites that look polished and feel alive.",
-      text: "I am Mahmudul Hasan. I enjoy building modern websites with creative visuals, smooth animations, and clean user interface design. My goal is to make every page feel professional, detailed, and memorable.",
+      title: "I am a software developer and web developer.",
+      text: "I am Mahmudul Hasan. I work with Python, C++, C#, Java, and JSX. I also build modern websites with clean UI, premium animation, and responsive layouts. Along with development, I am also a cybersecurity specialist focused on secure, smart, and professional digital solutions.",
     },
     work: {
       label: "Work Style",
@@ -473,7 +477,7 @@ export default function App() {
               <span className="block">Hasan</span>
             </h1>
             <p className="mt-7 max-w-2xl text-xl font-semibold text-purple-100/90 md:text-2xl">
-              Frontend developer creating premium websites with clean UI, strong details, and smooth animation.
+              Software developer, web developer, and cybersecurity specialist creating secure, premium, animated digital experiences.
             </p>
             <p className="mt-6 max-w-2xl text-base leading-8 text-purple-50/62 md:text-lg">
               I created this website to present my work, skills, and creative direction in a real portfolio format. It uses dark luxury visuals, purple glow, glassmorphism, responsive sections, and professional web structure.
